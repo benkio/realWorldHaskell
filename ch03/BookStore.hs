@@ -37,3 +37,17 @@ bookAuthors (Book id title authors) = authors
 nicerId      (Book id _ _)      = id
 nicerTitle   (Book _ title _)   = title
 nicerAuthors (Book _ _ authors) = authors
+
+-- Record Syntax -----------------------------------------------------
+data Customer = Customer {
+  customerID      :: CustomerID,
+  customerName    :: String,
+  customerAddress :: Address
+                         } deriving (Show)
+
+customer1                            = Customer 254234 "TestCustomer" ["nonSense", "Avenue"]
+customer2                            = Customer {
+                     customerID      = 44564232,
+                     customerName    = "Bullshit",
+                     customerAddress = ["Unknown"]
+                     }
