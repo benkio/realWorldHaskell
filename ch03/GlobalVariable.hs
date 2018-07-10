@@ -1,0 +1,1 @@
+itemName = "Global Variable"
