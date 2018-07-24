@@ -1,5 +1,6 @@
 import Data.Ord
 import Data.List
+import Data.List.Split
 
 data Tree a = Node a (Tree a) (Tree a)
             | Empty
@@ -38,12 +39,37 @@ treeHopCount :: Tree a -> Int
 treeHopCount Empty = 0
 treeHopCount (Node x r l) = 1 + (max (treeHopCount r) (treeHopCount l) )
 
-Data Direction = Left
-               | Right
-               | Straight
-               deriving (Show)
+data Direction = LeftTurn | RightTurn | Straight
+               deriving (Show, Eq)
 
-type 2DPoint = (Int, Int)
+type TwoDimensionPoint = (Int, Int)
 
-calculateTurn :: 2DPoint -> 2DPoint -> 2DPoint -> Direction
-calculateTurn (x1, y1) (x2, y2) (x3, y3) =
+calculateTurn :: TwoDimensionPoint -> TwoDimensionPoint -> TwoDimensionPoint -> Direction
+calculateTurn (x1, y1) (x2, y2) (x3, y3)
+  | crossProduct == 0 = Straight
+  | crossProduct > 0  = LeftTurn
+  | crossProduct < 0  = RightTurn
+    where crossProduct = (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1)
+
+calculateTurns :: [TwoDimensionPoint] -> [Direction]
+calculateTurns (x:y:z:xs) = (calculateTurn x y z) : (calculateTurns (y:z:xs))
+calculateTurns _ = []
+
+grahamScan :: [TwoDimensionPoint] -> [TwoDimensionPoint]
+grahamScan xs = let
+  startingPoint = minimumBy (\x y -> (snd x) `compare` (snd y)) xs
+  xsSorted = startingPoint : (sortBy (compareFrom startingPoint) (filter (/= startingPoint) xs))
+  in grahamScan' (drop 2 xsSorted) (take 2 xsSorted)
+
+grahamScan' :: [TwoDimensionPoint] -> [TwoDimensionPoint] -> [TwoDimensionPoint]
+grahamScan' [] acc = acc
+grahamScan' xs acc = case (calculateTurn beforelastAccepted lastAccepted (head xs)) of
+                       RightTurn -> grahamScan' xs (init acc)
+                       _         -> grahamScan' (tail xs) (acc ++ [(head xs)])
+  where
+    lastAccepted = head (reverse acc)
+    beforelastAccepted = last (take 2 (reverse acc))
+
+compareFrom :: TwoDimensionPoint -> TwoDimensionPoint -> TwoDimensionPoint -> Ordering
+compareFrom (ox, oy) (lx,ly) (rx, ry) =
+  compare ((lx - ox) * (ry - oy)) ((ly - oy) * (rx - ox))
