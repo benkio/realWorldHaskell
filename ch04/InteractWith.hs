@@ -9,7 +9,6 @@ main = mainWith myFunction
           args <- getArgs
           case args of
             [input, output] -> interactWith function input output
-            _ -> putStr
-            Ln "error: exactly two arguments needed"
+            _ -> putStrLn "error: exactly two arguments needed"
 
         myFunction = id
