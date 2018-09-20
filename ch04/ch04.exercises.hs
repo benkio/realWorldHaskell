@@ -1,6 +1,8 @@
 import System.Environment (getArgs)
+import Data.Char
 import Data.Maybe
 import Data.Text (transpose, unpack, pack)
+import qualified Control.Exception as E
 
 safeHead :: [a] -> Maybe a
 safeHead (x:_) = Just x
@@ -40,3 +42,22 @@ firstWords = unwords . (>>= (maybeToList . safeHead . words)) . lines
 
 wordsTrasposed :: String -> String
 wordsTrasposed = unwords . (map unpack) . transpose . (map pack) . words
+
+-- Fold exercises --------------------------------------------
+
+asInt_fold :: String -> Int
+asInt_fold ('-':xs) = negate $ asInt_fold xs
+asInt_fold n = fst $ foldr composeFunc (0, 0) n
+  where composeFunc d (acc, pos)
+          | isDigit d = (acc + (10 ^ pos) * digitToInt d, pos + 1)
+          | otherwise = error "input is not a digit"
+
+type ErrorMessage = String
+asInt_either :: String -> Either ErrorMessage Int
+asInt_either ('-':xs) = fmap negate $ asInt_either xs
+asInt_either n = fmap fst $ foldr composeFunc (Right (0, 0)) n
+  where
+    composeFunc _ (Left message) = Left message
+    composeFunc d (Right(acc, pos))
+          | isDigit d = Right (acc + (10 ^ pos) * digitToInt d, pos + 1)
+          | otherwise = Left "input is not a digit"
