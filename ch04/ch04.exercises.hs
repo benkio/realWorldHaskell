@@ -61,3 +61,23 @@ asInt_either n = fmap fst $ foldr composeFunc (Right (0, 0)) n
     composeFunc d (Right(acc, pos))
           | isDigit d = Right (acc + (10 ^ pos) * digitToInt d, pos + 1)
           | otherwise = Left "input is not a digit"
+
+concat :: [[a]] -> [a]
+concat xss = foldr (\xs accs -> xs ++ accs) [] xss
+
+myTakeWhile :: (a -> Bool) -> [a] -> [a]
+myTakeWhile f (x:xs)
+  | f x = x : myTakeWhile f xs
+  | otherwise = []
+
+myTakeWhile' :: (a -> Bool) -> [a] -> [a]
+myTakeWhile' f xs = foldr (\a acc -> if f a then a : acc else []) [] xs
+
+myGroupBy :: (a -> a -> Bool) -> [a] -> [[a]]
+myGroupBy f (x:xs) = foldl step [[x]] xs
+  where
+         step acc x
+               | f lastElem x      = (init acc) ++ [lastList ++ [x]]
+               | otherwise         = acc ++ [[x]]
+               where lastList = last acc
+                     lastElem = last lastList
