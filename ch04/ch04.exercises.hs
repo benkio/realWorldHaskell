@@ -14,3 +14,6 @@ myWords phrase = filter (/= "") $ foldl step [""] phrase
       | c == ' ' || c == '\n' = acc ++ [""]
       | last acc == "" = acc ++ [""++[c]]
       | otherwise = (init acc) ++ [(last acc) ++ (""++[c])]
+
+myUnlines :: [String] -> String
+myUnlines xs = foldr (\a b -> a ++ ['\n'] ++ b ) "" xs
