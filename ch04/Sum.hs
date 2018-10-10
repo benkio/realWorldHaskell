@@ -4,4 +4,7 @@ mySum xs = helper 0 xs
                  helper acc [] = acc
 
 
-mySum' xs = foldl (+) 0
+mySum' = foldl (+) 0
+
+niceSum :: [Integer] -> Integer
+niceSum = mySum'
