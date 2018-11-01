@@ -1,3 +1,8 @@
+module PrettyJSON where
+
+import PrettyStub
+import SimpleJSON
+
 renderJValue :: JValue -> Doc
 renderJValue (JBool True) = text "true"
 renderJValue (JBool False) = text "false"
