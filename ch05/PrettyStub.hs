@@ -22,6 +22,3 @@ char c = undefined
 
 fsep :: [Doc] -> Doc
 fsep docs = undefined
-
-punctuate :: Doc -> [Doc] -> [Doc]
-punctuate doc docs = undefined

@@ -13,6 +13,11 @@ renderJValue (JBool False) = text "false"
 renderJValue JNull = text "null"
 renderJValue (JNumber num) = double num
 renderJValue (JString str) = string str
+renderJValue (JArray ar) = series '[' ']' renderJValue ar
+renderJValue (JObject obj) = series '{' '}' field obj
+    where field (name,val) = string name
+                          <> text ": "
+                          <> renderJValue val
 
 enclose :: Char -> Char -> Doc -> Doc
 enclose rightChar leftChar doc = char leftChar <> doc <> char rightChar
@@ -46,6 +51,11 @@ hexEscape :: Char -> Doc
 hexEscape c | d < 0x10000 = smallHex d
             | otherwise   = astral (d - 0x10000)
   where d = ord c
+
+punctuate :: Doc -> [Doc] -> [Doc]
+punctuate _ [] = []
+punctuate _ [d] = [d]
+punctuate p (d:ds) = (d <> p) : punctuate p ds
 
 series :: Char -> Char -> (a -> Doc) -> [a] -> Doc
 series open close item = enclose open close
