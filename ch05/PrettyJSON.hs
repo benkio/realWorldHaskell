@@ -1,10 +1,11 @@
-module PrettyJSON where
+module PrettyJSON (renderJValue) where
 
-import PrettyStub
-import SimpleJSON
+import Prettify (Doc, (<>), char, double, fsep, hcat, punctuate, text,
+                 compact, pretty)
+import SimpleJSON (JValue(..))
 import Prelude hiding ((<>))
-import Numeric
-import Data.Bits
+import Numeric (showHex)
+import Data.Bits ((.&.), shiftR)
 import Data.Char
 
 renderJValue :: JValue -> Doc
@@ -51,11 +52,6 @@ hexEscape :: Char -> Doc
 hexEscape c | d < 0x10000 = smallHex d
             | otherwise   = astral (d - 0x10000)
   where d = ord c
-
-punctuate :: Doc -> [Doc] -> [Doc]
-punctuate _ [] = []
-punctuate _ [d] = [d]
-punctuate p (d:ds) = (d <> p) : punctuate p ds
 
 series :: Char -> Char -> (a -> Doc) -> [a] -> Doc
 series open close item = enclose open close

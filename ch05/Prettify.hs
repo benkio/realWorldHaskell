@@ -1,6 +1,8 @@
-module PrettyStub where
+module Prettify where
 
-import SimpleJSON
+import Prelude hiding ((<>))
+
+{- STUBS -}
 
 data Doc =  ToBeDefined
   deriving (Show)
@@ -22,3 +24,13 @@ char c = undefined
 
 fsep :: [Doc] -> Doc
 fsep docs = undefined
+
+compact = undefined
+pretty = undefined
+
+{- END OF STUBS -}
+
+punctuate :: Doc -> [Doc] -> [Doc]
+punctuate _ [] = []
+punctuate _ [d] = [d]
+punctuate p (d:ds) = (d <> p) : punctuate p ds
