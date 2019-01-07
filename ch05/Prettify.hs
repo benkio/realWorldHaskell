@@ -3,7 +3,6 @@ module Prettify where
 import Prelude hiding ((<>))
 
 {- STUBS -}
-compact = undefined
 pretty = undefined
 
 {- END OF STUBS -}
@@ -38,7 +37,7 @@ hcat :: [Doc] -> Doc
 hcat = fold (<>)
 
 fold :: (Doc -> Doc -> Doc) -> [Doc] -> Doc
-fold f = foldr (f) Empty
+fold f = foldr f Empty
 
 fsep :: [Doc] -> Doc
 fsep = fold (</>)
@@ -62,3 +61,15 @@ punctuate :: Doc -> [Doc] -> [Doc]
 punctuate _ [] = []
 punctuate _ [d] = [d]
 punctuate p (d:ds) = (d <> p) : punctuate p ds
+
+compact :: Doc -> String
+compact doc = transform [doc]
+  where transform [] = ""
+        transform (d:ds) =
+          case d of
+            Empty -> transform ds
+            Char c -> c : transform ds
+            Text s -> s ++ transform ds
+            Line -> '\n' : transform ds
+            Concat d1 d2 -> transform(d1:d2:ds)
+            Union _ d2 -> transform(d2:ds)

@@ -21,7 +21,7 @@ renderJValue (JObject obj) = series '{' '}' field obj
                           <> renderJValue val
 
 enclose :: Char -> Char -> Doc -> Doc
-enclose rightChar leftChar doc = char leftChar <> doc <> char rightChar
+enclose leftChar rightChar doc = char leftChar <> doc <> char rightChar
 
 string :: String -> Doc
 string = enclose '"' '"' . hcat . map oneChar
