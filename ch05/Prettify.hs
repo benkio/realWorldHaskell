@@ -98,3 +98,23 @@ fill limit doc
     where docPretty = (pretty (maxBound :: Int) doc)
           fillSpaces 0 d = d
           fillSpaces n d = fillSpaces (n-1) (d `Concat` Char ' ')
+
+indentDoc :: Int -> Int -> [Doc] -> [Doc]
+indentDoc n i d
+  | n <= 0 = d 
+  | otherwise = text [' ' | _ <- [1..i]] : indentDoc (n - 1) i d
+
+nest :: Int -> Doc -> Doc
+nest nested doc = hcat $ nestWithLevel nested 0 [doc]
+  where
+    nestWithLevel :: Int -> Int -> [Doc] -> [Doc]
+    nestWithLevel n l (d:ds) =
+          case d of
+                Char c | c `elem` ['{', '['] -> d : Line : indentDoc (l + 1) n (nestWithLevel n (l+1) ds)
+                Char c | c `elem` ['}', ']'] -> Line : (indentDoc (l-1) n [d] ++ nestWithLevel n (l-1) ds)
+                Line -> Line : indentDoc l n (nestWithLevel n l ds)
+                Char ',' -> d : Line : indentDoc l n (nestWithLevel n l ds)
+                a `Concat` b -> nestWithLevel n l (a:b:ds)
+                a `Union` b  -> nestWithLevel n l (ds)
+                _ -> d : nestWithLevel n l ds
+    nestWithLevel _ _ [] = []

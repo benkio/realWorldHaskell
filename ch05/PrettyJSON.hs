@@ -1,7 +1,7 @@
 module PrettyJSON (renderJValue) where
 
 import Prettify (Doc, (<>), char, double, fsep, hcat, punctuate, text,
-                 compact, pretty, fill)
+                 compact, pretty, fill, nest)
 import SimpleJSON (JValue(..))
 import Prelude hiding ((<>))
 import Numeric (showHex)
