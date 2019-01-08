@@ -90,3 +90,11 @@ pretty width x = best 0 [x]
           nicest col a b | (width - least) `fits` a = a
                          | otherwise                = b
                          where least = min width col
+
+fill :: Int -> Doc -> Doc
+fill limit doc
+  | limit `fits` docPretty = fillSpaces (limit - (length docPretty)) doc
+  | otherwise = doc
+    where docPretty = (pretty (maxBound :: Int) doc)
+          fillSpaces 0 d = d
+          fillSpaces n d = fillSpaces (n-1) (d `Concat` Char ' ')
