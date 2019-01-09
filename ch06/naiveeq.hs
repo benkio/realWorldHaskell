@@ -1,3 +1,5 @@
+module Naiveeq where
+
 data Color = Red | Green | Blue
 
 colorEq :: Color -> Color -> Bool
