@@ -1,5 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 
+module JSONClass where
+
 import SimpleJSON
 
 type JSONError = String
@@ -34,14 +36,6 @@ instance JSON Double where
     toJValue = JNumber
     fromJValue = doubleToJValue id
 
-instance JSON [a] where
-    toJValue = undefined
-    fromJValue = undefined
-
-instance (JSON a) => JSON [(String, a)] where
-    toJValue = undefined
-    fromJValue = undefined
-    
 doubleToJValue :: (Double -> a) -> JValue -> Either JSONError a
 doubleToJValue f (JNumber n) = Right (f n)
 doubleToJValue _ _ = Left "Not a JSON Number"
